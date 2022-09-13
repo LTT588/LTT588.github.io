@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>helloworld</title>
-    <url>/2022/09/13/helloworld/</url>
-    <content><![CDATA[<p> 博客搭建中……</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>八股文笔记</title>
-    <url>/2022/09/13/note/</url>
+    <title>myarticle</title>
+    <url>/2022/09/13/myarticle/</url>
     <content><![CDATA[<h2 id="接口与抽象类的区别"><a href="#接口与抽象类的区别" class="headerlink" title="接口与抽象类的区别"></a>接口与抽象类的区别</h2><p>接口：interface</p>
 <p>抽象类：abstract </p>
 <p>都不能被实例化，即不能使用new关键字来实例化对象  只能被继承</p>
@@ -57,14 +51,14 @@
 </li>
 </ol>
 <h2 id="MySQL存储引擎之MyISAM和InnoDB"><a href="#MySQL存储引擎之MyISAM和InnoDB" class="headerlink" title="MySQL存储引擎之MyISAM和InnoDB"></a>MySQL存储引擎之MyISAM和InnoDB</h2>]]></content>
-  </entry>
-  <entry>
-    <title>myarticle</title>
-    <url>/2022/09/13/myarticle/</url>
-    <content><![CDATA[]]></content>
       <categories>
         <category>八股文笔记</category>
-        <category>项目</category>
       </categories>
+  </entry>
+  <entry>
+    <title>helloworld</title>
+    <url>/2022/09/13/helloworld/</url>
+    <content><![CDATA[<p> 博客搭建中……</p>
+]]></content>
   </entry>
 </search>
