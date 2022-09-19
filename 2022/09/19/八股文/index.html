@@ -1,70 +1,307 @@
-<?xml version="1.0" encoding="utf-8"?>
-<search>
-  <entry>
-    <title>八股文</title>
-    <url>/2022/09/13/myarticle/</url>
-    <content><![CDATA[<h2 id="接口与抽象类的区别"><a href="#接口与抽象类的区别" class="headerlink" title="接口与抽象类的区别"></a>接口与抽象类的区别</h2><p>接口：interface</p>
-<p>抽象类：abstract </p>
-<p>都不能被实例化，即不能使用new关键字来实例化对象  只能被继承</p>
-<p>抽象类是一个抽象的概念  接口是共同的特征   比如说男人、女人是两个类 那么他们的抽象类是人 （他们都是人）  比如鸟和飞机 会飞  设计一个接口fly  </p>
-<p>Java抽象类只能继承一个类（单继承）  但可以实现多个接口</p>
-<p>抽象类可定义构造方法 可以有抽象方法和具体方法  接口没有构造方法且方法都是抽象的</p>
-<h2 id="查看linux内存使用情况"><a href="#查看linux内存使用情况" class="headerlink" title="查看linux内存使用情况"></a>查看linux内存使用情况</h2><ol>
-<li>cat &#x2F;proc&#x2F;meminfo</li>
-<li>atop</li>
-<li>free</li>
-<li>top</li>
-</ol>
-<h2 id="乐观锁、悲观锁"><a href="#乐观锁、悲观锁" class="headerlink" title="乐观锁、悲观锁"></a>乐观锁、悲观锁</h2><p><strong>乐观锁的实现方式</strong>：比较典型的一种是  CAS技术   </p>
-<p>但是会有ABA问题</p>
-<p>比如说一个线程1从数据库中取出库存数3，这时候另一个线程2也从数据库中库存数3，并且线程2进行了一些操作将库存数变成了2，紧接着又将库存数变成3，这时候线程1进行CAS操作发现数据库中仍然是3，然后线程1操作成功。尽管线程1的CAS操作成功，但是不代表这个过程就是没有问题的。</p>
-<p>有一个比较好的办法可以解决ABA问题，那就是通过一个单独的可以顺序递增的version字段。</p>
-<p><strong>悲观锁的实现方式</strong>：</p>
-<ul>
-<li>在对记录进行修改前，先尝试为该记录加上排他锁（exclusive locking）。</li>
-<li>如果加锁失败，说明该记录正在被修改，那么当前查询可能要等待或者抛出异常。具体响应方式由开发者根据实际需要决定。</li>
-<li>如果成功加锁，那么就可以对记录做修改，事务完成后就会解锁了。</li>
-<li>其间如果有其他事务对该记录做加锁的操作，都要等待当前事务解锁或直接抛出异常。</li>
-</ul>
-<h2 id="数据库的四大特性"><a href="#数据库的四大特性" class="headerlink" title="数据库的四大特性"></a>数据库的四大特性</h2><p>​															<strong>原子性 一致性 隔离性 持久性</strong></p>
-<p><strong>原子性</strong>：一个事物要么都成功，要么都失败，不会存在部分成功部分失败</p>
-<p><strong>一致性</strong>：一个事物执行前后状态保持一致</p>
-<p><strong>隔离性</strong>：两个事务之间互不干扰</p>
-<p><strong>持久性</strong>：一个事物一单提交，永久保存</p>
-<h2 id="数据库的隔离级别"><a href="#数据库的隔离级别" class="headerlink" title="数据库的隔离级别"></a>数据库的隔离级别</h2><ol>
-<li><strong>读未提交度</strong>           最危险，什么情况都有可能发生：脏读、不可重复读、幻读</li>
-<li><strong>读已提交度</strong>            防止脏读、但可能出现 不可重复读、幻读</li>
-<li><strong>可重复读</strong>             数据库默认隔离级别。但有可能出现幻读</li>
-<li><strong>可串行化</strong>            级别最高  相当于单线程，全表锁，一次只能执行一个事物，执行效率最差</li>
-</ol>
-<p><strong>脏读</strong>：当一个事物正在访问数据并且对数据进行了修改，而这种数据修改还没有提交到数据库中，这时另外一个事物也访问了这个数据，然后使用了这个数据， 因为这个数据还没有提交到数据库，那么另外一个事物读到的数据是脏数据</p>
-<p><strong>不可重复读</strong>：在一个事务内多次读同一数据，在这个事物还没有结束时，另一个事务也访问该数据，那么，在第一个事务中的两次读数据之间，由于第二个事务的修改导致第一个事务两次读取的数据可能不一样    </p>
-<p><strong>幻读</strong>：幻读与不可重复读类似，他发生在一个事物读取了几行数据，接着另一个并发事务插入了一些数据，在随后的查询中，第一个事务就会发现多了一些原本不存在的记录   就好像发生了幻觉一样 所以称为幻读</p>
-<p>​					<strong>不可重复读与幻读的区别</strong>：不可重复读的重点是修改    比如多次读取一条数据发现其中某些列的值被修改，幻读的重点在于新增或者删除  比如多次读取一条记录发现记录增多或减少了</p>
-<h2 id="如何查看数据库隔离级别、如何修改"><a href="#如何查看数据库隔离级别、如何修改" class="headerlink" title="如何查看数据库隔离级别、如何修改"></a>如何查看数据库隔离级别、如何修改</h2><ol>
-<li><p>如何查看数据库隔离级别</p>
-<p>show variables like “%isolation%”;或   select @@tx_isolation;</p>
-</li>
-<li><p>修改隔离级别</p>
-<p>​        全局修改：set global transaction isolation level read committed;</p>
-<p>本次事务修改：set session transaction isolation level read committed;</p>
-</li>
-</ol>
-<h2 id="MySQL存储引擎之MyISAM和InnoDB"><a href="#MySQL存储引擎之MyISAM和InnoDB" class="headerlink" title="MySQL存储引擎之MyISAM和InnoDB"></a>MySQL存储引擎之MyISAM和InnoDB</h2>]]></content>
-      <categories>
-        <category>八股文笔记</category>
-      </categories>
-  </entry>
-  <entry>
-    <title>helloworld</title>
-    <url>/2022/09/13/helloworld/</url>
-    <content><![CDATA[<p> 博客搭建中……</p>
-]]></content>
-  </entry>
-  <entry>
-    <title>八股文</title>
-    <url>/2022/09/19/%E5%85%AB%E8%82%A1%E6%96%87/</url>
-    <content><![CDATA[<h1 id="面向对象的三个基本特征是：封装、继承、多态"><a href="#面向对象的三个基本特征是：封装、继承、多态" class="headerlink" title="面向对象的三个基本特征是：封装、继承、多态"></a>面向对象的三个基本特征是：封装、继承、多态</h1><p>封装：封装了类的内部实现机制，使代码模块化。</p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="面向对象的三个基本特征是：封装、继承、多态封装：封装了类的内部实现机制，使代码模块化。 继承：子类继承父类的方法和属性，提高代码的复用性，提高开发效率 java中只有单继承，没有像c++那种多继承，多继承会引起混乱， 让继承链复杂，系统难以维护。java可通过接口来实现多继承。 多态：一个事物有多种形态 比如小明是人 也是学生 需要有三个条件：父类引用指向子类对象  继承 重写 增加代码的灵活性和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="八股文">
+<meta property="og:url" content="http://example.com/2022/09/19/%E5%85%AB%E8%82%A1%E6%96%87/index.html">
+<meta property="og:site_name" content="罗小白的博客">
+<meta property="og:description" content="面向对象的三个基本特征是：封装、继承、多态封装：封装了类的内部实现机制，使代码模块化。 继承：子类继承父类的方法和属性，提高代码的复用性，提高开发效率 java中只有单继承，没有像c++那种多继承，多继承会引起混乱， 让继承链复杂，系统难以维护。java可通过接口来实现多继承。 多态：一个事物有多种形态 比如小明是人 也是学生 需要有三个条件：父类引用指向子类对象  继承 重写 增加代码的灵活性和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="c:\Users\%E7%BD%97%E5%B0%8F%E7%99%BD\AppData\Roaming\Typora\typora-user-images\image-20220430085806770.png">
+<meta property="og:image" content="c:\Users\%E7%BD%97%E5%B0%8F%E7%99%BD\AppData\Roaming\Typora\typora-user-images\image-20220430094059603.png">
+<meta property="og:image" content="c:\Users\%E7%BD%97%E5%B0%8F%E7%99%BD\AppData\Roaming\Typora\typora-user-images\image-20220430094147557.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220502144009018.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220504111303067.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220508100432003.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220508101253189.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220508101133456.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220508101713045.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220508101746399.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220510211059196.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220502133221005.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220502160920983.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220502161836516.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f62316661303435332d613462302d346561652d613335322d3438616363613866666637342e706e67">
+<meta property="og:image" content="https://camo.githubusercontent.com/65aa9be0a5faea5fb50ec17101ce3e900688ad9079ac67fed8bb7fb40c8578f1/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65316564613364352d356563382d343730382d386532352d3161303463356531316634382e706e67">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f37623238316231652d303539352d343032622d616533352d3863393130383463333363312e706e67">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f63663433383661312d353863392d346563612d613137662d6531326231653937373065622e706e67">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65623835393232382d633066322d346263652d393130642d6439663736393239333532622e706e67">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\68747470733a2">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\68747470733a2f2f63732d6e6f7465732d31323536313039">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\68747470733a2f2f63732d6e6f7465732d3132">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\68747470733a2f2f63732d6">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220502141526140.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220515084225214.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\image-20220502151538097.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220513092338433.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220513092415464.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220513092453435.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220513092530569.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220513092557946.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220513092630017.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220503190012279.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220503202424241.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220504085556824.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220504090233430.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220509111437634.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220504091544559.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220504104932386.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220511211017467.png">
+<meta property="og:image" content="e:\AAA%E7%BD%97%E7%94%B0\%E9%9D%A2%E8%AF%95\%E7%AC%94%E8%AE%B0\images\image-20220508094718926.png">
+<meta property="article:published_time" content="2022-09-19T04:00:00.000Z">
+<meta property="article:modified_time" content="2022-09-19T01:31:11.420Z">
+<meta property="article:author" content="罗小白">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:\Users\%E7%BD%97%E5%B0%8F%E7%99%BD\AppData\Roaming\Typora\typora-user-images\image-20220430085806770.png">
+
+<link rel="canonical" href="http://example.com/2022/09/19/%E5%85%AB%E8%82%A1%E6%96%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>八股文 | 罗小白的博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">罗小白的博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-note">
+
+    <a href="/note/" rel="section"><i class="fa fa-book fa-fw"></i>笔记</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-resources">
+
+    <a href="/resources/" rel="section"><i class="fa fa-download fa-fw"></i>资源</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/09/19/%E5%85%AB%E8%82%A1%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="罗小白">
+      <meta itemprop="description" content="静以修身">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="罗小白的博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          八股文
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-19 12:00:00 / 修改时间：09:31:11" itemprop="dateCreated datePublished" datetime="2022-09-19T12:00:00+08:00">2022-09-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%85%AB%E8%82%A1%E6%96%87%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">八股文笔记</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="面向对象的三个基本特征是：封装、继承、多态"><a href="#面向对象的三个基本特征是：封装、继承、多态" class="headerlink" title="面向对象的三个基本特征是：封装、继承、多态"></a>面向对象的三个基本特征是：封装、继承、多态</h1><p>封装：封装了类的内部实现机制，使代码模块化。</p>
 <p>继承：子类继承父类的方法和属性，提高代码的复用性，提高开发效率</p>
 <p>java中只有单继承，没有像c++那种多继承，多继承会引起混乱， 让继承链复杂，系统难以维护。java可通过接口来实现多继承。</p>
 <p>多态：一个事物有多种形态 比如小明是人 也是学生 需要有三个条件：父类引用指向子类对象  继承 重写 增加代码的灵活性和扩展性</p>
@@ -145,7 +382,7 @@
 <p><strong>请求体由：请求行、请求头、请求数据</strong>组成</p>
 <p>注意:<strong>GET请求没有请求体</strong></p>
 <p>请求行：请求方式（post、get）、请求的资源、协议版本（HTTP&#x2F;1.0：创建一次链接获得一个web资源，链接断开；HTTP&#x2F;1.1：创建一个链接，获得多个web资源，保持连接）</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">GET http://www.example.com/ HTTP/1.1</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,en;q=0.8</span><br><span class="line">Cache-Control: max-age=0</span><br><span class="line">Host: www.example.com</span><br><span class="line">If-Modified-Since: Thu, 17 Oct 2019 07:18:26 GMT</span><br><span class="line">If-None-Match: &quot;3147526947+gzip&quot;</span><br><span class="line">Proxy-Connection: keep-alive</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 xxx</span><br><span class="line"></span><br><span class="line">param1=1&amp;param2=2</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">GET http://www.example.com/ HTTP/1.1</span><br><span class="line">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Accept-Language: zh-CN,zh;q=0.9,en;q=0.8</span><br><span class="line">Cache-Control: max-age=0</span><br><span class="line">Host: www.example.com</span><br><span class="line">If-Modified-Since: Thu, 17 Oct 2019 07:18:26 GMT</span><br><span class="line">If-None-Match: &quot;3147526947+gzip&quot;</span><br><span class="line">Proxy-Connection: keep-alive</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla/5.0 xxx</span><br><span class="line"></span><br><span class="line">param1=1&amp;param2=2</span><br></pre></td></tr></table></figure>
 
 <h3 id="Http的响应报文"><a href="#Http的响应报文" class="headerlink" title="Http的响应报文"></a>Http的响应报文</h3><p>http响应报文是服务器返回给我们的数据</p>
 <p>响应报文包含：状态行、响应首部字段、响应内容</p>
@@ -156,7 +393,7 @@
 <li>一个空行分隔首部和内容主体</li>
 <li>最后是响应的内容主体</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Age: 529651</span><br><span class="line">Cache-Control: max-age=604800</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Content-Encoding: gzip</span><br><span class="line">Content-Length: 648</span><br><span class="line">Content-Type: text/html; charset=UTF-8</span><br><span class="line">Date: Mon, 02 Nov 2020 17:53:39 GMT</span><br><span class="line">Etag: &quot;3147526947+ident+gzip&quot;</span><br><span class="line">Expires: Mon, 09 Nov 2020 17:53:39 GMT</span><br><span class="line">Keep-Alive: timeout=4</span><br><span class="line">Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT</span><br><span class="line">Proxy-Connection: keep-alive</span><br><span class="line">Server: ECS (sjc/16DF)</span><br><span class="line">Vary: Accept-Encoding</span><br><span class="line">X-Cache: HIT</span><br><span class="line"></span><br><span class="line">&lt;!doctype html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;Example Domain&lt;/title&gt;</span><br><span class="line">	// 省略... </span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Age: 529651</span><br><span class="line">Cache-Control: max-age=604800</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Content-Encoding: gzip</span><br><span class="line">Content-Length: 648</span><br><span class="line">Content-Type: text/html; charset=UTF-8</span><br><span class="line">Date: Mon, 02 Nov 2020 17:53:39 GMT</span><br><span class="line">Etag: &quot;3147526947+ident+gzip&quot;</span><br><span class="line">Expires: Mon, 09 Nov 2020 17:53:39 GMT</span><br><span class="line">Keep-Alive: timeout=4</span><br><span class="line">Last-Modified: Thu, 17 Oct 2019 07:18:26 GMT</span><br><span class="line">Proxy-Connection: keep-alive</span><br><span class="line">Server: ECS (sjc/16DF)</span><br><span class="line">Vary: Accept-Encoding</span><br><span class="line">X-Cache: HIT</span><br><span class="line"></span><br><span class="line">&lt;!doctype html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;Example Domain&lt;/title&gt;</span><br><span class="line">	// 省略... </span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
 
@@ -228,7 +465,7 @@
 <ol>
 <li>可能是由于CPU占用率太高导致自动关闭应用程序池。</li>
 <li>可能是由于应用程序标识出错引起的。</li>
-<li>可能是由管理员手工关闭<a href="https://baike.baidu.com/item/%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E6%B1%A0">应用程序池</a>引起的。</li>
+<li>可能是由管理员手工关闭<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E6%B1%A0">应用程序池</a>引起的。</li>
 <li>可能是因为请求时应用程序池队列已满而生成该错误</li>
 </ol>
 <h2 id="HTTP-x2F-1-1新特性"><a href="#HTTP-x2F-1-1新特性" class="headerlink" title="HTTP&#x2F;1.1新特性"></a>HTTP&#x2F;1.1新特性</h2><ul>
@@ -279,7 +516,7 @@
 <p><strong>缺点：</strong>每次请求会传输大量重复的内容信息，并且在请求之间无法实现数据共享   可使用Cookie  Session 或GET中url</p>
 <h2 id="建立了一次HTTP连接以后，每次还要再TCP连接么？"><a href="#建立了一次HTTP连接以后，每次还要再TCP连接么？" class="headerlink" title="建立了一次HTTP连接以后，每次还要再TCP连接么？"></a>建立了一次HTTP连接以后，每次还要再TCP连接么？</h2><p>在HTTP&#x2F;1.0中默认使用短连接。也就是说，客户端和服务器每进行一次HTTP操作，就建立一次连接，任务结束就中断连接。当客户端浏览器访问的某个HTML或其他类型的Web页中包含有其他的Web资源（如JavaScript文件、图像文件、CSS文件等），每遇到这样一个Web资源，浏览器就会重新建立一个HTTP会话。</p>
 <p>而从HTTP&#x2F;1.1起，默认使用长连接，用以保持连接特性。使用长连接的HTTP协议，会在响应头加入这行代码： </p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Connection:keep-alive</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection:keep-alive</span><br></pre></td></tr></table></figure>
 
 <p> 在使用长连接的情况下，当一个网页打开完成后，客户端和服务器之间用于传输HTTP数据的TCP连接不会关闭，客户端再次访问这个服务器时，会继续使用这一条已经建立的连接。Keep-Alive不会永久保持连接，它有一个保持时间，可以在不同的服务器软件（如Apache）中设定这个时间。实现长连接需要客户端和服务端都支持长连接。</p>
 <h2 id="三次握手"><a href="#三次握手" class="headerlink" title="三次握手"></a>三次握手</h2><p>第一次握手：客户端将标识位SYN置为1，随机产生一个seq&#x3D;x,并把该数据包发给服务器。客户端进入SYN_SENT状态</p>
@@ -301,7 +538,7 @@
 <p>如果采用的是三次握手，就算是那一次失效的报文传送过来了，服务端接受到了那条失效报文并且回复了确认报文，但是客户端不会再次发出确认。由于服务器收不到确认，就知道客户端并没有请求连接。</p>
 <h1 id="为什么TCP连接的时候是3次，关闭的时候却是4次？"><a href="#为什么TCP连接的时候是3次，关闭的时候却是4次？" class="headerlink" title="为什么TCP连接的时候是3次，关闭的时候却是4次？"></a>为什么TCP连接的时候是3次，关闭的时候却是4次？</h1><p>因为只有在客户端和服务端都没有数据要发送的时候才能断开TCP。而客户端发出FIN报文时只能保证客户端没有数据发了，服务端还有没有数据发客户端是不知道的。而服务端 收到客户端的FIN报文后只能先回复客户端一个确认报文来告诉客户端我服务端已经收到你的FIN报文了，但我服务端还有一些数据没发完，等这些数据发完了服务端才能给客户 端发FIN报文</p>
 <h2 id="TCP协议如何保证传输的可靠性"><a href="#TCP协议如何保证传输的可靠性" class="headerlink" title="TCP协议如何保证传输的可靠性"></a>TCP协议如何保证传输的可靠性</h2><ul>
-<li>数据包校验  ：<br>TCP<a href="https://so.csdn.net/so/search?q=%E6%A0%A1%E9%AA%8C%E5%92%8C&spm=1001.2101.3001.7020">校验和</a>是一个端到端的校验和，由发送端计算，然后由接收端验证。其目的是为了发现TCP首部和数据在发送端到接收端之间发生的任何改动。如果接收方检测到校验和有差错，则TCP段会被直接丢弃，重新发送。</li>
+<li>数据包校验  ：<br>TCP<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E6%A0%A1%E9%AA%8C%E5%92%8C&spm=1001.2101.3001.7020">校验和</a>是一个端到端的校验和，由发送端计算，然后由接收端验证。其目的是为了发现TCP首部和数据在发送端到接收端之间发生的任何改动。如果接收方检测到校验和有差错，则TCP段会被直接丢弃，重新发送。</li>
 <li>对失序数据包进行重排序</li>
 <li>应答机制        每次接收方收到数据后，都会对传输方进行确认应答。也就是发送ACK报文。这个ACK报文当中带有对应的确认序列号(也叫确认号 (ack))，告诉发送方，接收到了哪些数据，下一次的数据从哪里发。</li>
 <li>超时重发</li>
@@ -332,7 +569,7 @@
 <p>快重传要求，接收者如果接收到一个<code>乱序的分组</code>的话，就返回对前一个正确分组的确认应答，<br>当浏览器连续收到<code>三个冗余ACK</code>，就会马上<code>快速重传丢失数据</code>，不必等到超时时间再重传。</p>
 <h3 id="超时重传和快速重传的对比"><a href="#超时重传和快速重传的对比" class="headerlink" title="超时重传和快速重传的对比"></a>超时重传和快速重传的对比</h3><p>超时重传缺点是太慢了，RTO的设置不好把握<br>快速重传解决了超时重传的慢速缺点，但是多发了好几个ACK会导致网络更加拥塞</p>
 <h2 id="GET和POST的区别"><a href="#GET和POST的区别" class="headerlink" title="GET和POST的区别"></a>GET和POST的区别</h2><p><img src="E:\AAA罗田\面试\笔记\images\image-20220502133221005.png" alt="image-20220502133221005"></p>
-<h2 id="浏览器中输入“www-xxx-com”之后都发生了什么"><a href="#浏览器中输入“www-xxx-com”之后都发生了什么" class="headerlink" title="浏览器中输入“www.xxx.com”之后都发生了什么"></a>浏览器中输入“<a href="http://www.xxx.com”之后都发生了什么/">www.xxx.com”之后都发生了什么</a></h2><ol>
+<h2 id="浏览器中输入“www-xxx-com”之后都发生了什么"><a href="#浏览器中输入“www-xxx-com”之后都发生了什么" class="headerlink" title="浏览器中输入“www.xxx.com”之后都发生了什么"></a>浏览器中输入“<a target="_blank" rel="noopener" href="http://www.xxx.com”之后都发生了什么/">www.xxx.com”之后都发生了什么</a></h2><ol>
 <li>域名-&gt;ip  （DNS协议）</li>
 <li>建立TCP&#x2F;IP连接（三次握手</li>
 <li>浏览器发送一个http请求</li>
@@ -457,11 +694,11 @@
 <p>当发生死锁时不会对用户造成多大影响，或发生死锁的概率很低，可以采用鸵鸟策略。</p>
 <p>大多数操作系统，包括 Unix，Linux 和 Windows，处理死锁问题的办法仅仅是忽略它。</p>
 <h4 id="死锁检测和死锁恢复"><a href="#死锁检测和死锁恢复" class="headerlink" title="死锁检测和死锁恢复"></a>死锁检测和死锁恢复</h4><p>不试图阻止死锁，而是当检测到死锁发生时，采取措施进行恢复。</p>
-<h5 id="1-每种类型一个资源的死锁检测"><a href="#1-每种类型一个资源的死锁检测" class="headerlink" title="1. 每种类型一个资源的死锁检测"></a>1. 每种类型一个资源的死锁检测</h5><p><a href="https://camo.githubusercontent.com/5663be4d3b58da1b738412ca4854b61d255974230c1c88875f96511618a5bae0/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f62316661303435332d613462302d346561652d613335322d3438616363613866666637342e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f62316661303435332d613462302d346561652d613335322d3438616363613866666637342e706e67" alt="img"></a></p>
+<h5 id="1-每种类型一个资源的死锁检测"><a href="#1-每种类型一个资源的死锁检测" class="headerlink" title="1. 每种类型一个资源的死锁检测"></a>1. 每种类型一个资源的死锁检测</h5><p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/5663be4d3b58da1b738412ca4854b61d255974230c1c88875f96511618a5bae0/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f62316661303435332d613462302d346561652d613335322d3438616363613866666637342e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f62316661303435332d613462302d346561652d613335322d3438616363613866666637342e706e67" alt="img"></a></p>
 <p>上图为资源分配图，其中方框表示资源，圆圈表示进程。资源指向进程表示该资源已经分配给该进程，进程指向资源表示进程请求获取该资源。</p>
 <p>图 a 可以抽取出环，如图 b，它满足了环路等待条件，因此会发生死锁。</p>
 <p>每种类型一个资源的死锁检测算法是通过检测有向图是否存在环来实现，从一个节点出发进行深度优先搜索，对访问过的节点进行标记，如果访问了已经标记的节点，就表示有向图存在环，也就是检测到死锁的发生。</p>
-<h5 id="2-每种类型多个资源的死锁检测"><a href="#2-每种类型多个资源的死锁检测" class="headerlink" title="2. 每种类型多个资源的死锁检测"></a>2. 每种类型多个资源的死锁检测</h5><p><a href="https://camo.githubusercontent.com/65aa9be0a5faea5fb50ec17101ce3e900688ad9079ac67fed8bb7fb40c8578f1/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65316564613364352d356563382d343730382d386532352d3161303463356531316634382e706e67"><img src="https://camo.githubusercontent.com/65aa9be0a5faea5fb50ec17101ce3e900688ad9079ac67fed8bb7fb40c8578f1/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65316564613364352d356563382d343730382d386532352d3161303463356531316634382e706e67" alt="img"></a></p>
+<h5 id="2-每种类型多个资源的死锁检测"><a href="#2-每种类型多个资源的死锁检测" class="headerlink" title="2. 每种类型多个资源的死锁检测"></a>2. 每种类型多个资源的死锁检测</h5><p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/65aa9be0a5faea5fb50ec17101ce3e900688ad9079ac67fed8bb7fb40c8578f1/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65316564613364352d356563382d343730382d386532352d3161303463356531316634382e706e67"><img src="https://camo.githubusercontent.com/65aa9be0a5faea5fb50ec17101ce3e900688ad9079ac67fed8bb7fb40c8578f1/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65316564613364352d356563382d343730382d386532352d3161303463356531316634382e706e67" alt="img"></a></p>
 <p>上图中，有三个进程四个资源，每个数据代表的含义如下：</p>
 <ul>
 <li>E 向量：资源总量</li>
@@ -504,7 +741,7 @@
 <p>所选择的被换出的页面将是最长时间内不再被访问，通常可以保证获得最低的缺页率。</p>
 <p>是一种理论上的算法，因为无法知道一个页面多长时间不再被访问。</p>
 <p>举例：一个系统为某进程分配了三个物理块，并有如下页面引用序列：</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">7，0，1，2，0，3，0，4，2，3，0，3，2，1，2，0，1，7，0，1</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">7，0，1，2，0，3，0，4，2，3，0，3，2，1，2，0，1，7，0，1</span><br></pre></td></tr></table></figure>
 
 <p>开始运行时，先将 7, 0, 1 三个页面装入内存。当进程要访问页面 2 时，产生缺页中断，会将页面 7 换出，因为页面 7 再次被访问的时间最长。</p>
 <h4 id="2-最近最久未使用"><a href="#2-最近最久未使用" class="headerlink" title="2.最近最久未使用"></a>2.最近最久未使用</h4><blockquote>
@@ -513,9 +750,9 @@
 <p>虽然无法知道将来要使用的页面情况，但是可以知道过去使用页面的情况。LRU 将最近最久未使用的页面换出。</p>
 <p>为了实现 LRU，需要在内存中维护一个所有页面的链表。当一个页面被访问时，将这个页面移到链表表头。这样就能保证链表表尾的页面是最近最久未访问的。</p>
 <p>因为每次访问都需要更新链表，因此这种方式实现的 LRU 代价很高。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">4，7，0，7，1，0，1，2，1，2，6</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">4，7，0，7，1，0，1，2，1，2，6</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://camo.githubusercontent.com/c5cd2c10ae1c8526540a7af00c5390d1a953f147c4c147358953c9e929897cc3/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65623835393232382d633066322d346263652d393130642d6439663736393239333532622e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65623835393232382d633066322d346263652d393130642d6439663736393239333532622e706e67" alt="img"></a></p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/c5cd2c10ae1c8526540a7af00c5390d1a953f147c4c147358953c9e929897cc3/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65623835393232382d633066322d346263652d393130642d6439663736393239333532622e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65623835393232382d633066322d346263652d393130642d6439663736393239333532622e706e67" alt="img"></a></p>
 <h4 id="3-先进先出"><a href="#3-先进先出" class="headerlink" title="3. 先进先出"></a>3. 先进先出</h4><blockquote>
 <p>FIFO, First In First Out</p>
 </blockquote>
@@ -523,14 +760,14 @@
 <p>该算法会将那些经常被访问的页面换出，导致缺页率升高。</p>
 <h4 id="4-第二次机会算法"><a href="#4-第二次机会算法" class="headerlink" title="4.第二次机会算法"></a>4.第二次机会算法</h4><p>FIFO 算法可能会把经常使用的页面置换出去，为了避免这一问题，对该算法做一个简单的修改：</p>
 <p>当页面被访问 (读或写) 时设置该页面的 R 位为 1。需要替换的时候，检查最老页面的 R 位。如果 R 位是 0，那么这个页面既老又没有被使用，可以立刻置换掉；如果是 1，就将 R 位清 0，并把该页面放到链表的尾端，修改它的装入时间使它就像刚装入的一样，然后继续从链表的头部开始搜索。</p>
-<p><a href="https://camo.githubusercontent.com/579e409ef1551a1dc1c59487bc2fd54e93129ec97573721a3027376aa7f17595/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65636638616435642d353430332d343862392d623665372d6632653230666665386663612e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2" alt="img"></a></p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/579e409ef1551a1dc1c59487bc2fd54e93129ec97573721a3027376aa7f17595/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65636638616435642d353430332d343862392d623665372d6632653230666665386663612e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2" alt="img"></a></p>
 <h4 id="5-时钟"><a href="#5-时钟" class="headerlink" title="5.时钟"></a>5.时钟</h4><p>第二次机会算法需要在链表中移动页面，降低了效率。时钟算法使用环形链表将页面连接起来，再使用一个指针指向最老的页面。</p>
-<p><a href="https://camo.githubusercontent.com/66bf1e33e909443e7fd77bf1d37c6144162b0545ac0aa6b078928e40a4d64878/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f35663565663062362d393865612d343937632d613030372d6636633535323838656162312e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6e6f7465732d31323536313039" alt="img"></a></p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/66bf1e33e909443e7fd77bf1d37c6144162b0545ac0aa6b078928e40a4d64878/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f35663565663062362d393865612d343937632d613030372d6636633535323838656162312e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6e6f7465732d31323536313039" alt="img"></a></p>
 <h3 id="分段"><a href="#分段" class="headerlink" title="分段"></a>分段</h3><p>虚拟内存采用的是分页技术，也就是将地址空间划分成固定大小的页，每一页再与内存进行映射。</p>
 <p>下图为一个编译器在编译过程中建立的多个表，有 4 个表是动态增长的，如果使用分页系统的一维地址空间，动态增长的特点会导致覆盖问题的出现。</p>
-<p><a href="https://camo.githubusercontent.com/bc968c738c37aa7ad6d63d9b95a4803f11fe14aac87f571558024d19af30d399/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f32326465303533382d376336652d343336352d626433622d3863653363353930303231362e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6e6f7465732d3132" alt="img"></a></p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/bc968c738c37aa7ad6d63d9b95a4803f11fe14aac87f571558024d19af30d399/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f32326465303533382d376336652d343336352d626433622d3863653363353930303231362e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6e6f7465732d3132" alt="img"></a></p>
 <p>分段的做法是把每个表分成段，一个段构成一个独立的地址空间。每个段的长度可以不同，并且可以动态增长。</p>
-<p><a href="https://camo.githubusercontent.com/836f0a92a1f8ff0dee7112c8fc213daa419a42e82cd543d6fd87100fc2624bec/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65303930306262322d323230612d343362372d396161392d3164356364353566663536652e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6" alt="img"></a></p>
+<p><a target="_blank" rel="noopener" href="https://camo.githubusercontent.com/836f0a92a1f8ff0dee7112c8fc213daa419a42e82cd543d6fd87100fc2624bec/68747470733a2f2f63732d6e6f7465732d313235363130393739362e636f732e61702d6775616e677a686f752e6d7971636c6f75642e636f6d2f65303930306262322d323230612d343362372d396161392d3164356364353566663536652e706e67"><img src="E:\AAA罗田\面试\笔记\images\68747470733a2f2f63732d6" alt="img"></a></p>
 <h3 id="段页式"><a href="#段页式" class="headerlink" title="段页式"></a>段页式</h3><p>程序的地址空间划分成多个拥有独立地址空间的段，每个段上的地址空间划分成大小相同的页。这样既拥有分段系统的共享和保护，又拥有分页系统的虚拟内存功能。</p>
 <h3 id="分页与分段的比较"><a href="#分页与分段的比较" class="headerlink" title="分页与分段的比较"></a>分页与分段的比较</h3><ul>
 <li>对程序员的透明性：分页透明，但是分段需要程序员显式划分每个段。</li>
@@ -594,7 +831,7 @@
 <h1 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h1><h2 id="避免Hash碰撞策略"><a href="#避免Hash碰撞策略" class="headerlink" title="避免Hash碰撞策略"></a>避免Hash碰撞策略</h2><ol>
 <li><p>开放地址法：容易产生堆积问题；不适于大规模的数据存储<img src="E:\AAA罗田\面试\笔记\image-20220502151538097.png" alt="image-20220502151538097"></p>
 </li>
-<li><p>拉链法：：<strong>处理冲突简单，且无堆积现象，平均查找长度短；<a href="https://so.csdn.net/so/search?q=%E9%93%BE%E8%A1%A8&spm=1001.2101.3001.7020">链表</a>中的结点是动态申请的，适合构造表不能确定长度的情况；相对而言，拉链法的指针域可以忽略不计，因此较开放地址法更加节省空间。插入结点应该在链首，删除结点比较方便，只需调整指针而不需要对其他冲突元素作调整。</strong></p>
+<li><p>拉链法：：<strong>处理冲突简单，且无堆积现象，平均查找长度短；<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=%E9%93%BE%E8%A1%A8&spm=1001.2101.3001.7020">链表</a>中的结点是动态申请的，适合构造表不能确定长度的情况；相对而言，拉链法的指针域可以忽略不计，因此较开放地址法更加节省空间。插入结点应该在链首，删除结点比较方便，只需调整指针而不需要对其他冲突元素作调整。</strong></p>
 <p>将所有关键字为同义词的记录存储在同一线性链表中。基本思想:将所有哈希地址为i的元素构成一个称为同义词链的单链表，并将单链表的头指针存在哈希表的第i个单元中，因而查找、插入和删除主要在同义词链中进行。链地址法适用于经常进行插入和删除的情况。</p>
 <p>在用拉链法构造的散列表中，删除结点的操作易于实现。只要简单地删去链表上相应的结点即可。而对开放地址法构造的散列表，删除结点不能简单地将被删结点的空间置为空，否则将截断在它之后填人散列表的同义词结点的查找路径。这是因为各种开放地址法中，空地址单元(即开放地址)都是查找失败的条件。因此在用开放地址法处理冲突的散列表上执行删除操作，只能在被删结点上做删除标记，而不能真正删除结点。</p>
 </li>
@@ -658,28 +895,28 @@
 <li>转发界面的URL不会改变，而重定向的地址会改变</li>
 <li>转发只能转发到自己的web应用内，重定向可以重新定义到任意资源路径</li>
 </ol>
-<h1 id="integer缓存池"><a href="#integer缓存池" class="headerlink" title="integer缓存池"></a>integer缓存池</h1><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">Integer x = 127;</span><br><span class="line">Integer y = 127;</span><br><span class="line">Integer m = 99999;</span><br><span class="line">Integer n = 99999;</span><br><span class="line"> </span><br><span class="line">System.out.println(&quot;x == y: &quot; + (x==y)); // true</span><br><span class="line">System.out.println(&quot;m == n: &quot; + (m==n)); // false</span><br></pre></td></tr></table></figure>
+<h1 id="integer缓存池"><a href="#integer缓存池" class="headerlink" title="integer缓存池"></a>integer缓存池</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Integer x = 127;</span><br><span class="line">Integer y = 127;</span><br><span class="line">Integer m = 99999;</span><br><span class="line">Integer n = 99999;</span><br><span class="line"> </span><br><span class="line">System.out.println(&quot;x == y: &quot; + (x==y)); // true</span><br><span class="line">System.out.println(&quot;m == n: &quot; + (m==n)); // false</span><br></pre></td></tr></table></figure>
 
 <p>为什么第一次进行等值比较结果为true，而第二次的结果却是false？</p>
 <p>这是由于Integer在其内部的缓存池内把“-128-127”的值已经创建好了，这样可以节省内存空间，避免造成不必要的浪费，在进行比较时，由于第一组值使用缓存池中的127，而第二种情况，超出缓存池范围。</p>
 <h1 id="JAVA常用集合"><a href="#JAVA常用集合" class="headerlink" title="JAVA常用集合"></a>JAVA常用集合</h1><p><img src="E:\AAA罗田\面试\笔记\images\image-20220503190012279.png" alt="image-20220503190012279"></p>
 <h1 id="十大排序算法"><a href="#十大排序算法" class="headerlink" title="十大排序算法"></a>十大排序算法</h1><p><img src="E:\AAA罗田\面试\笔记\images\image-20220503202424241.png" alt="image-20220503202424241"></p>
-<p><strong>冒泡排序[<a href="https://www.runoob.com/w3cnote/bubble-sort.html">1.1 冒泡排序 | 菜鸟教程 (runoob.com)</a>]</strong></p>
-<p><strong>插入排序</strong>[<a href="https://www.runoob.com/w3cnote/insertion-sort.html">1.3 插入排序 | 菜鸟教程 (runoob.com)</a>]</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">void insertion_sort(int arr[],int len)&#123;</span><br><span class="line">        for(int i=1;i&lt;len;i++)&#123;</span><br><span class="line">                int key=arr[i];</span><br><span class="line">                int j=i-1;</span><br><span class="line">                while((j&gt;=0) &amp;&amp; (key&lt;arr[j]))&#123;</span><br><span class="line">                        arr[j+1]=arr[j];</span><br><span class="line">                        j--;</span><br><span class="line">                &#125;</span><br><span class="line">                arr[j+1]=key;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>冒泡排序[<a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/bubble-sort.html">1.1 冒泡排序 | 菜鸟教程 (runoob.com)</a>]</strong></p>
+<p><strong>插入排序</strong>[<a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/insertion-sort.html">1.3 插入排序 | 菜鸟教程 (runoob.com)</a>]</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">void insertion_sort(int arr[],int len)&#123;</span><br><span class="line">        for(int i=1;i&lt;len;i++)&#123;</span><br><span class="line">                int key=arr[i];</span><br><span class="line">                int j=i-1;</span><br><span class="line">                while((j&gt;=0) &amp;&amp; (key&lt;arr[j]))&#123;</span><br><span class="line">                        arr[j+1]=arr[j];</span><br><span class="line">                        j--;</span><br><span class="line">                &#125;</span><br><span class="line">                arr[j+1]=key;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong>选择排序</strong>[<a href="https://www.runoob.com/w3cnote/selection-sort.html">1.2 选择排序 | 菜鸟教程 (runoob.com)</a>]</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">template&lt;typename T&gt; //整數或浮點數皆可使用，若要使用物件（class）時必須設定大於（&gt;）的運算子功能</span><br><span class="line">void selection_sort(std::vector&lt;T&gt;&amp; arr) &#123;</span><br><span class="line">        for (int i = 0; i &lt; arr.size() - 1; i++) &#123;</span><br><span class="line">                int min = i;</span><br><span class="line">                for (int j = i + 1; j &lt; arr.size(); j++)</span><br><span class="line">                        if (arr[j] &lt; arr[min])</span><br><span class="line">                                min = j;</span><br><span class="line">                std::swap(arr[i], arr[min]);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>选择排序</strong>[<a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/selection-sort.html">1.2 选择排序 | 菜鸟教程 (runoob.com)</a>]</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">template&lt;typename T&gt; //整數或浮點數皆可使用，若要使用物件（class）時必須設定大於（&gt;）的運算子功能</span><br><span class="line">void selection_sort(std::vector&lt;T&gt;&amp; arr) &#123;</span><br><span class="line">        for (int i = 0; i &lt; arr.size() - 1; i++) &#123;</span><br><span class="line">                int min = i;</span><br><span class="line">                for (int j = i + 1; j &lt; arr.size(); j++)</span><br><span class="line">                        if (arr[j] &lt; arr[min])</span><br><span class="line">                                min = j;</span><br><span class="line">                std::swap(arr[i], arr[min]);</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong>希尔排序</strong>[<a href="https://www.runoob.com/w3cnote/shell-sort.html">1.4 希尔排序 | 菜鸟教程 (runoob.com)</a>]</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">shell_sort</span><span class="params">(T array[], <span class="type">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> h = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (h &lt; length / <span class="number">3</span>) &#123;</span><br><span class="line">        h = <span class="number">3</span> * h + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (h &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = h; i &lt; length; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = i; j &gt;= h &amp;&amp; array[j] &lt; array[j - h]; j -= h) &#123;</span><br><span class="line">                std::<span class="built_in">swap</span>(array[j], array[j - h]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        h = h / <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>希尔排序</strong>[<a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/shell-sort.html">1.4 希尔排序 | 菜鸟教程 (runoob.com)</a>]</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">shell_sort</span><span class="params">(T array[], <span class="type">int</span> length)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> h = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (h &lt; length / <span class="number">3</span>) &#123;</span><br><span class="line">        h = <span class="number">3</span> * h + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span> (h &gt;= <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = h; i &lt; length; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> j = i; j &gt;= h &amp;&amp; array[j] &lt; array[j - h]; j -= h) &#123;</span><br><span class="line">                std::<span class="built_in">swap</span>(array[j], array[j - h]);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        h = h / <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><a href="https://www.runoob.com/w3cnote/merge-sort.html">1.5 归并排序 | 菜鸟教程 (runoob.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/merge-sort.html">1.5 归并排序 | 菜鸟教程 (runoob.com)</a></p>
 <p><strong>快速排序</strong></p>
-<p><a href="https://www.runoob.com/w3cnote/heap-sort.html">1.7 堆排序 | 菜鸟教程 (runoob.com)</a></p>
-<p><a href="https://www.runoob.com/w3cnote/counting-sort.html">1.8 计数排序 | 菜鸟教程 (runoob.com)</a></p>
-<p><a href="https://www.runoob.com/w3cnote/bucket-sort.html">1.9 桶排序 | 菜鸟教程 (runoob.com)</a></p>
-<p><a href="https://www.runoob.com/w3cnote/radix-sort.html">1.10 基数排序 | 菜鸟教程 (runoob.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/heap-sort.html">1.7 堆排序 | 菜鸟教程 (runoob.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/counting-sort.html">1.8 计数排序 | 菜鸟教程 (runoob.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/bucket-sort.html">1.9 桶排序 | 菜鸟教程 (runoob.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/w3cnote/radix-sort.html">1.10 基数排序 | 菜鸟教程 (runoob.com)</a></p>
 <h1 id="深拷贝和浅拷贝"><a href="#深拷贝和浅拷贝" class="headerlink" title="深拷贝和浅拷贝"></a>深拷贝和浅拷贝</h1><p>浅拷贝（shallowCopy）只是增加了一个指针指向已存在的内存地址，</p>
 <p>深拷贝（deepCopy）是增加了一个指针并且申请了一个新的内存，使这个增加的指针指向这个新的内存，</p>
 <p>使用深拷贝的情况下，释放内存的时候不会因为出现浅拷贝时释放同一个内存的错误。</p>
@@ -732,7 +969,7 @@
 <li>查看哪个代码占用CPU执行时间最长</li>
 <li>查看每个方法占用CPU时间比例</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 显示系统各个进程的资源使用情况</span><br><span class="line">top</span><br><span class="line">// 查看某个进程中的线程占用情况</span><br><span class="line">top -Hp pid</span><br><span class="line">// 查看当前 Java 进程的线程堆栈信息</span><br><span class="line">jstack pid</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 显示系统各个进程的资源使用情况</span><br><span class="line">top</span><br><span class="line">// 查看某个进程中的线程占用情况</span><br><span class="line">top -Hp pid</span><br><span class="line">// 查看当前 Java 进程的线程堆栈信息</span><br><span class="line">jstack pid</span><br></pre></td></tr></table></figure>
 
 <ol start="2">
 <li><strong>JVM 内存指标</strong></li>
@@ -745,7 +982,7 @@
 <li>查看是哪个区域导致的GC</li>
 <li>查看GC后能否正常回收到内存</li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 查看当前的 JVM 参数配置</span><br><span class="line">ps -ef | grep java</span><br><span class="line">// 查看 Java 进程的配置信息，包括系统属性和JVM命令行标志</span><br><span class="line">jinfo pid</span><br><span class="line">// 输出 Java 进程当前的 gc 情况</span><br><span class="line">jstat -gc pid</span><br><span class="line">// 输出 Java 堆详细信息</span><br><span class="line">jmap -heap pid</span><br><span class="line">// 显示堆中对象的统计信息</span><br><span class="line">jmap -histo:live pid</span><br><span class="line">// 生成 Java 堆存储快照dump文件</span><br><span class="line">jmap -F -dump:format=b,file=dumpFile.phrof pid</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">// 查看当前的 JVM 参数配置</span><br><span class="line">ps -ef | grep java</span><br><span class="line">// 查看 Java 进程的配置信息，包括系统属性和JVM命令行标志</span><br><span class="line">jinfo pid</span><br><span class="line">// 输出 Java 进程当前的 gc 情况</span><br><span class="line">jstat -gc pid</span><br><span class="line">// 输出 Java 堆详细信息</span><br><span class="line">jmap -heap pid</span><br><span class="line">// 显示堆中对象的统计信息</span><br><span class="line">jmap -histo:live pid</span><br><span class="line">// 生成 Java 堆存储快照dump文件</span><br><span class="line">jmap -F -dump:format=b,file=dumpFile.phrof pid</span><br></pre></td></tr></table></figure>
 
 <ol start="3">
 <li><strong>JVM GC指标</strong></li>
@@ -765,7 +1002,7 @@
 <p>VM 的 GC指标一般是从 GC 日志里面查看，默认的 GC 日志可能比较少，我们可以添加以下参数，来丰富我们的GC日志输出，方便我们定位问题。</p>
 </li>
 </ul>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">// 打印GC的详细信息</span><br><span class="line">-XX:+PrintGCDetails</span><br><span class="line">// 打印GC的时间戳</span><br><span class="line">-XX:+PrintGCDateStamps</span><br><span class="line">// 在GC前后打印堆信息</span><br><span class="line">-XX:+PrintHeapAtGC</span><br><span class="line">// 打印Survivor区中各个年龄段的对象的分布信息</span><br><span class="line">-XX:+PrintTenuringDistribution</span><br><span class="line">// JVM启动时输出所有参数值，方便查看参数是否被覆盖</span><br><span class="line">-XX:+PrintFlagsFinal</span><br><span class="line">// 打印GC时应用程序的停止时间</span><br><span class="line">-XX:+PrintGCApplicationStoppedTime</span><br><span class="line">// 打印在GC期间处理引用对象的时间（仅在PrintGCDetails时启用）</span><br><span class="line">-XX:+PrintReferenceGC</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 打印GC的详细信息</span><br><span class="line">-XX:+PrintGCDetails</span><br><span class="line">// 打印GC的时间戳</span><br><span class="line">-XX:+PrintGCDateStamps</span><br><span class="line">// 在GC前后打印堆信息</span><br><span class="line">-XX:+PrintHeapAtGC</span><br><span class="line">// 打印Survivor区中各个年龄段的对象的分布信息</span><br><span class="line">-XX:+PrintTenuringDistribution</span><br><span class="line">// JVM启动时输出所有参数值，方便查看参数是否被覆盖</span><br><span class="line">-XX:+PrintFlagsFinal</span><br><span class="line">// 打印GC时应用程序的停止时间</span><br><span class="line">-XX:+PrintGCApplicationStoppedTime</span><br><span class="line">// 打印在GC期间处理引用对象的时间（仅在PrintGCDetails时启用）</span><br><span class="line">-XX:+PrintReferenceGC</span><br></pre></td></tr></table></figure>
 
 <h3 id="确定优化目标"><a href="#确定优化目标" class="headerlink" title="确定优化目标"></a><strong>确定优化目标</strong></h3><p>1.针对JVM堆的设置，通常能够经过-Xms -Xmx限定其最小、最大值，为了防止垃圾收集器在最小、最大之间收缩堆而产生额外的时间，一般把最大、最小设置为相同的值;<br>2.年轻代和年老代将根据默认的比例（1：2）分配堆内存，<br>3.年轻代和年老代设置多大才算合理<br>    当老年代内存过小时可能引起频繁Full GC，当内存过大时Full GC时间会特别长。</p>
 <h2 id="JVM参数调优"><a href="#JVM参数调优" class="headerlink" title="JVM参数调优"></a>JVM参数调优</h2><p><img src="E:\AAA罗田\面试\笔记\images\image-20220509111437634.png" alt="image-20220509111437634"></p>
@@ -805,7 +1042,7 @@
 <li>通过路径实现反射机制</li>
 <li>通过类名实现反射机制</li>
 </ol>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">//方式一(通过建立对象)</span><br><span class="line">5 Student stu = new Student();</span><br><span class="line">6 Class classobj1 = stu.getClass();</span><br><span class="line">7 System.out.println(classobj1.getName());</span><br><span class="line">8 //方式二（所在通过路径-相对路径）</span><br><span class="line">9 Class classobj2 = Class.forName(&quot;fanshe.Student&quot;);</span><br><span class="line">10 System.out.println(classobj2.getName());</span><br><span class="line">11 //方式三（通过类名）</span><br><span class="line">12 Class classobj3 = Student.class;</span><br><span class="line">13 System.out.println(classobj3.getName());</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">//方式一(通过建立对象)</span><br><span class="line">5 Student stu = new Student();</span><br><span class="line">6 Class classobj1 = stu.getClass();</span><br><span class="line">7 System.out.println(classobj1.getName());</span><br><span class="line">8 //方式二（所在通过路径-相对路径）</span><br><span class="line">9 Class classobj2 = Class.forName(&quot;fanshe.Student&quot;);</span><br><span class="line">10 System.out.println(classobj2.getName());</span><br><span class="line">11 //方式三（通过类名）</span><br><span class="line">12 Class classobj3 = Student.class;</span><br><span class="line">13 System.out.println(classobj3.getName());</span><br></pre></td></tr></table></figure>
 
 <p>1）Class.forName(“类的路径”)； 2）类名.class 3）对象名.getClass() </p>
 <h2 id="反射机制优缺点"><a href="#反射机制优缺点" class="headerlink" title="反射机制优缺点"></a>反射机制优缺点</h2><p> 优点： 运行期类型的判断，动态加载类，提高代码灵活度。 </p>
@@ -950,9 +1187,318 @@
 <li>实现Callable接口 并重写run方法</li>
 <li>通过线程池创建</li>
 </ol>
-<h1 id="java类加载器"><a href="#java类加载器" class="headerlink" title="java类加载器"></a>java类加载器</h1>]]></content>
-      <categories>
-        <category>八股文笔记</category>
-      </categories>
-  </entry>
-</search>
+<h1 id="java类加载器"><a href="#java类加载器" class="headerlink" title="java类加载器"></a>java类加载器</h1>
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>只想买包辣条！</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.png" alt="罗小白 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.png" alt="罗小白 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>罗小白
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://example.com/2022/09/19/%E5%85%AB%E8%82%A1%E6%96%87/" title="八股文">http://example.com/2022/09/19/八股文/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/13/myarticle/" rel="prev" title="八股文">
+      <i class="fa fa-chevron-left"></i> 八股文
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC81NzIyMi8zMzY4Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E4%B8%89%E4%B8%AA%E5%9F%BA%E6%9C%AC%E7%89%B9%E5%BE%81%E6%98%AF%EF%BC%9A%E5%B0%81%E8%A3%85%E3%80%81%E7%BB%A7%E6%89%BF%E3%80%81%E5%A4%9A%E6%80%81"><span class="nav-number">1.</span> <span class="nav-text">面向对象的三个基本特征是：封装、继承、多态</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E7%B1%BB%E5%92%8C%E6%8E%A5%E5%8F%A3%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">抽象类和接口？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%87%AA%E6%97%8B"><span class="nav-number">2.</span> <span class="nav-text">自旋</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%87%AA%E6%97%8B"><span class="nav-number">2.1.</span> <span class="nav-text">什么是自旋</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E9%94%81"><span class="nav-number">2.2.</span> <span class="nav-text">自旋锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E8%87%AA%E6%97%8B%E9%94%81"><span class="nav-number">2.3.</span> <span class="nav-text">非自旋锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E9%94%81%E5%92%8C%E9%9D%9E%E8%87%AA%E6%97%8B%E9%94%81%E6%9C%80%E5%A4%A7%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">2.4.</span> <span class="nav-text">自旋锁和非自旋锁最大的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E6%97%8B%E9%94%81%E7%9A%84%E5%A5%BD%E5%A4%84"><span class="nav-number">2.5.</span> <span class="nav-text">自旋锁的好处</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Synchronized"><span class="nav-number">3.</span> <span class="nav-text">Synchronized</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%94%81"><span class="nav-number">4.</span> <span class="nav-text">锁</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E5%8F%AB%E5%8F%AF%E9%87%8D%E5%85%A5%E9%94%81-ReentrantLock"><span class="nav-number">4.1.</span> <span class="nav-text">什么叫可重入锁     ReentrantLock</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Synchronized%E5%92%8CRentrantLock%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">4.2.</span> <span class="nav-text">Synchronized和RentrantLock的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%82%B2%E8%A7%82%E9%94%81%E4%B9%90%E8%A7%82%E9%94%81"><span class="nav-number">4.3.</span> <span class="nav-text">悲观锁乐观锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%90%E8%A7%82%E9%94%81-CAS"><span class="nav-number">4.4.</span> <span class="nav-text">乐观锁         CAS</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFAQS%EF%BC%88%E6%8A%BD%E8%B1%A1%E7%9A%84%E9%98%9F%E5%88%97%E5%90%8C%E6%AD%A5%E5%99%A8%EF%BC%89"><span class="nav-number">4.5.</span> <span class="nav-text">什么是AQS（抽象的队列同步器）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="nav-number">5.</span> <span class="nav-text">计算机网络体系结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E5%92%8CUDP%E7%9A%84%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">5.1.</span> <span class="nav-text">TCP和UDP的区别和优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP-x2F-HTTPS"><span class="nav-number">5.2.</span> <span class="nav-text">HTTP&#x2F;HTTPS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFhttp%E8%AF%B7%E6%B1%82%E4%BD%93"><span class="nav-number">5.2.1.</span> <span class="nav-text">什么是http请求体</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Http%E7%9A%84%E5%93%8D%E5%BA%94%E6%8A%A5%E6%96%87"><span class="nav-number">5.2.2.</span> <span class="nav-text">Http的响应报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Https%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C"><span class="nav-number">5.2.3.</span> <span class="nav-text">Https如何工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E6%AC%A1%E5%AE%8C%E6%95%B4%E7%9A%84HTTP%E8%AF%B7%E6%B1%82%E8%BF%87%E7%A8%8B"><span class="nav-number">5.2.4.</span> <span class="nav-text">一次完整的HTTP请求过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP%E5%92%8CHTTPS%E5%8C%BA%E5%88%AB"><span class="nav-number">5.2.5.</span> <span class="nav-text">HTTP和HTTPS区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E5%A6%82%E4%BD%95%E9%AA%8C%E8%AF%81HTTPS%E8%AF%81%E4%B9%A6%E7%9A%84%E5%90%88%E6%B3%95%E6%80%A7%EF%BC%9F"><span class="nav-number">5.3.</span> <span class="nav-text">浏览器如何验证HTTPS证书的合法性？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84HTTP%E6%96%B9%E6%B3%95%E6%9C%89%E5%93%AA%E4%BA%9B"><span class="nav-number">5.3.1.</span> <span class="nav-text">常见的HTTP方法有哪些</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HEAD%E8%AF%B7%E6%B1%82"><span class="nav-number">5.3.2.</span> <span class="nav-text">HEAD请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PUT%E8%AF%B7%E6%B1%82"><span class="nav-number">5.3.3.</span> <span class="nav-text">PUT请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DELETE"><span class="nav-number">5.3.4.</span> <span class="nav-text">DELETE</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#SSL%E7%9A%84%E5%BB%BA%E7%AB%8B%E8%BF%87%E7%A8%8B%E6%80%BB%E5%85%B1%E6%9C%8913%E4%B8%AA%E5%8C%85%EF%BC%8C%E7%AC%AC%E4%B8%80%E6%AC%A1%E5%BB%BA%E7%AB%8B%E8%87%B3%E5%B0%91%E9%9C%80%E8%A6%819%E4%B8%AA%E5%8C%85%E3%80%82"><span class="nav-number">6.</span> <span class="nav-text">SSL的建立过程总共有13个包，第一次建立至少需要9个包。</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81http%E7%8A%B6%E6%80%81%E7%A0%81"><span class="nav-number">6.0.1.</span> <span class="nav-text">常见http状态码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP-x2F-1-1%E6%96%B0%E7%89%B9%E6%80%A7"><span class="nav-number">6.1.</span> <span class="nav-text">HTTP&#x2F;1.1新特性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HTTP-x2F-1-x-%E7%BC%BA%E9%99%B7"><span class="nav-number">6.1.1.</span> <span class="nav-text">HTTP&#x2F;1.x 缺陷</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E7%A1%AE%E4%BF%9D%E6%95%B0%E6%8D%AE%E5%AE%8C%E6%95%B4%E6%80%A7"><span class="nav-number">6.2.</span> <span class="nav-text">如何确保数据完整性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OSI%E6%A8%A1%E5%9E%8B-TCP-x2F-IP%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.3.</span> <span class="nav-text">OSI模型   TCP&#x2F;IP模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-x2F-IP-%E5%9B%9B%E5%B1%82%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E3%80%82"><span class="nav-number">6.3.1.</span> <span class="nav-text">TCP&#x2F;IP 四层体系结构。</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%B1%82"><span class="nav-number">6.3.1.1.</span> <span class="nav-text">应用层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%BF%90%E8%BE%93%E5%B1%82"><span class="nav-number">6.3.1.2.</span> <span class="nav-text">运输层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E5%B1%82"><span class="nav-number">6.3.1.3.</span> <span class="nav-text">网络层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E9%93%BE%E8%B7%AF%E5%B1%82"><span class="nav-number">6.3.1.4.</span> <span class="nav-text">数据链路层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%A9%E7%90%86%E5%B1%82"><span class="nav-number">6.3.1.5.</span> <span class="nav-text">物理层</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E5%B1%82%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.4.</span> <span class="nav-text">五层协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E5%8D%8F%E8%AE%AE%E5%9C%A8%E5%93%AA%E4%B8%80%E5%B1%82%EF%BC%9FIP%E5%8D%8F%E8%AE%AE%E5%9C%A8%E5%93%AA%E4%B8%80%E5%B1%82%EF%BC%9FHTTP%E5%9C%A8%E5%93%AA%E4%B8%80%E5%B1%82%EF%BC%9F"><span class="nav-number">6.5.</span> <span class="nav-text">TCP协议在哪一层？IP协议在哪一层？HTTP在哪一层？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFHTTP%E6%97%A0%E7%8A%B6%E6%80%81%E5%8D%8F%E8%AE%AE"><span class="nav-number">6.6.</span> <span class="nav-text">什么是HTTP无状态协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%BA%E7%AB%8B%E4%BA%86%E4%B8%80%E6%AC%A1HTTP%E8%BF%9E%E6%8E%A5%E4%BB%A5%E5%90%8E%EF%BC%8C%E6%AF%8F%E6%AC%A1%E8%BF%98%E8%A6%81%E5%86%8DTCP%E8%BF%9E%E6%8E%A5%E4%B9%88%EF%BC%9F"><span class="nav-number">6.7.</span> <span class="nav-text">建立了一次HTTP连接以后，每次还要再TCP连接么？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B"><span class="nav-number">6.8.</span> <span class="nav-text">三次握手</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B"><span class="nav-number">6.9.</span> <span class="nav-text">四次挥手</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP%E5%8D%8F%E8%AE%AE%E4%B8%BA%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E8%80%8C%E4%B8%8D%E6%98%AF%E4%B8%A4%E6%AC%A1%E5%91%A2%EF%BC%9F"><span class="nav-number">7.</span> <span class="nav-text">TCP协议为什么是三次握手而不是两次呢？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88TCP%E8%BF%9E%E6%8E%A5%E7%9A%84%E6%97%B6%E5%80%99%E6%98%AF3%E6%AC%A1%EF%BC%8C%E5%85%B3%E9%97%AD%E7%9A%84%E6%97%B6%E5%80%99%E5%8D%B4%E6%98%AF4%E6%AC%A1%EF%BC%9F"><span class="nav-number">8.</span> <span class="nav-text">为什么TCP连接的时候是3次，关闭的时候却是4次？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP%E5%8D%8F%E8%AE%AE%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81%E4%BC%A0%E8%BE%93%E7%9A%84%E5%8F%AF%E9%9D%A0%E6%80%A7"><span class="nav-number">8.1.</span> <span class="nav-text">TCP协议如何保证传输的可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">8.1.1.</span> <span class="nav-text">TCP流量控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP%E6%8B%A5%E5%A1%9E%E6%8E%A7%E5%88%B6"><span class="nav-number">8.1.2.</span> <span class="nav-text">TCP拥塞控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0"><span class="nav-number">8.1.3.</span> <span class="nav-text">超时重传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0"><span class="nav-number">8.1.4.</span> <span class="nav-text">快速重传</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B6%85%E6%97%B6%E9%87%8D%E4%BC%A0%E5%92%8C%E5%BF%AB%E9%80%9F%E9%87%8D%E4%BC%A0%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">8.1.5.</span> <span class="nav-text">超时重传和快速重传的对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GET%E5%92%8CPOST%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">8.2.</span> <span class="nav-text">GET和POST的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E8%BE%93%E5%85%A5%E2%80%9Cwww-xxx-com%E2%80%9D%E4%B9%8B%E5%90%8E%E9%83%BD%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88"><span class="nav-number">8.3.</span> <span class="nav-text">浏览器中输入“www.xxx.com”之后都发生了什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Cookie%E5%92%8CSession%E7%9A%84%E5%AF%B9%E6%AF%94"><span class="nav-number">8.4.</span> <span class="nav-text">Cookie和Session的对比</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFToken"><span class="nav-number">8.5.</span> <span class="nav-text">什么是Token</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TIME-WAIT%E5%92%8CCLOSE-WAIT"><span class="nav-number">8.6.</span> <span class="nav-text">TIME_WAIT和CLOSE_WAIT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%A7%E9%87%8F%E5%A4%84%E4%BA%8ECLOSE-WAIT%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="nav-number">8.7.</span> <span class="nav-text">大量处于CLOSE_WAIT的原因</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E4%B8%AA%E8%8C%83%E5%BC%8F"><span class="nav-number">9.</span> <span class="nav-text">三个范式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Redis"><span class="nav-number">10.</span> <span class="nav-text">Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E7%A9%BF%E9%80%8F"><span class="nav-number">10.1.</span> <span class="nav-text">缓存穿透</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E5%87%BB%E7%A9%BF"><span class="nav-number">10.2.</span> <span class="nav-text">缓存击穿</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9B%AA%E5%B4%A9"><span class="nav-number">10.3.</span> <span class="nav-text">缓存雪崩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis%E6%8C%81%E4%B9%85%E5%8C%96%E6%9C%BA%E5%88%B6"><span class="nav-number">10.4.</span> <span class="nav-text">Redis持久化机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#redis%E5%88%A0%E9%99%A4%E7%AD%96%E7%95%A5"><span class="nav-number">10.5.</span> <span class="nav-text">redis删除策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F"><span class="nav-number">11.</span> <span class="nav-text">操作系统</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">11.1.</span> <span class="nav-text">进程和线程有什么区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="nav-number">11.2.</span> <span class="nav-text">进程间通信方式有哪些？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5"><span class="nav-number">11.3.</span> <span class="nav-text">进程调度策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E7%A8%8B%E5%90%8C%E6%AD%A5"><span class="nav-number">11.4.</span> <span class="nav-text">进程同步</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8F"><span class="nav-number">11.4.1.</span> <span class="nav-text">信号量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%A1%E7%A8%8B"><span class="nav-number">11.4.2.</span> <span class="nav-text">管程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%8F%E5%85%B8%E5%90%8C%E6%AD%A5%E9%97%AE%E9%A2%98"><span class="nav-number">11.4.3.</span> <span class="nav-text">经典同步问题</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%90%8C%E6%AD%A5%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">11.5.</span> <span class="nav-text">线程同步的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8"><span class="nav-number">11.6.</span> <span class="nav-text">IO多路复用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%BB%E9%94%81"><span class="nav-number">11.7.</span> <span class="nav-text">死锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%85%E8%A6%81%E6%9D%A1%E4%BB%B6"><span class="nav-number">11.7.1.</span> <span class="nav-text">必要条件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E6%96%B9%E6%B3%95"><span class="nav-number">11.7.2.</span> <span class="nav-text">处理方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%B8%B5%E9%B8%9F%E7%AD%96%E7%95%A5"><span class="nav-number">11.7.2.1.</span> <span class="nav-text">鸵鸟策略</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E6%A3%80%E6%B5%8B%E5%92%8C%E6%AD%BB%E9%94%81%E6%81%A2%E5%A4%8D"><span class="nav-number">11.7.2.2.</span> <span class="nav-text">死锁检测和死锁恢复</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E6%AF%8F%E7%A7%8D%E7%B1%BB%E5%9E%8B%E4%B8%80%E4%B8%AA%E8%B5%84%E6%BA%90%E7%9A%84%E6%AD%BB%E9%94%81%E6%A3%80%E6%B5%8B"><span class="nav-number">11.7.2.2.1.</span> <span class="nav-text">1. 每种类型一个资源的死锁检测</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%AF%8F%E7%A7%8D%E7%B1%BB%E5%9E%8B%E5%A4%9A%E4%B8%AA%E8%B5%84%E6%BA%90%E7%9A%84%E6%AD%BB%E9%94%81%E6%A3%80%E6%B5%8B"><span class="nav-number">11.7.2.2.2.</span> <span class="nav-text">2. 每种类型多个资源的死锁检测</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E6%AD%BB%E9%94%81%E6%81%A2%E5%A4%8D"><span class="nav-number">11.7.2.2.3.</span> <span class="nav-text">3. 死锁恢复</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E9%A2%84%E9%98%B2"><span class="nav-number">11.7.2.3.</span> <span class="nav-text">死锁预防</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%AD%BB%E9%94%81%E9%81%BF%E5%85%8D"><span class="nav-number">11.7.2.4.</span> <span class="nav-text">死锁避免</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">11.8.</span> <span class="nav-text">内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">11.8.1.</span> <span class="nav-text">虚拟内存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E7%B3%BB%E7%BB%9F%E5%9C%B0%E5%9D%80%E6%98%A0%E5%B0%84"><span class="nav-number">11.8.2.</span> <span class="nav-text">分页系统地址映射</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A1%B5%E9%9D%A2%E7%BD%AE%E6%8D%A2%E7%AE%97%E6%B3%95"><span class="nav-number">11.8.3.</span> <span class="nav-text">页面置换算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E6%9C%80%E4%BD%B3"><span class="nav-number">11.8.3.1.</span> <span class="nav-text">1. 最佳</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E6%9C%80%E8%BF%91%E6%9C%80%E4%B9%85%E6%9C%AA%E4%BD%BF%E7%94%A8"><span class="nav-number">11.8.3.2.</span> <span class="nav-text">2.最近最久未使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E5%85%88%E8%BF%9B%E5%85%88%E5%87%BA"><span class="nav-number">11.8.3.3.</span> <span class="nav-text">3. 先进先出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-%E7%AC%AC%E4%BA%8C%E6%AC%A1%E6%9C%BA%E4%BC%9A%E7%AE%97%E6%B3%95"><span class="nav-number">11.8.3.4.</span> <span class="nav-text">4.第二次机会算法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-%E6%97%B6%E9%92%9F"><span class="nav-number">11.8.3.5.</span> <span class="nav-text">5.时钟</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%AE%B5"><span class="nav-number">11.8.4.</span> <span class="nav-text">分段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%AE%B5%E9%A1%B5%E5%BC%8F"><span class="nav-number">11.8.5.</span> <span class="nav-text">段页式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E9%A1%B5%E4%B8%8E%E5%88%86%E6%AE%B5%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-number">11.8.6.</span> <span class="nav-text">分页与分段的比较</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="nav-number">12.</span> <span class="nav-text">设计模式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%85%AD%E5%A4%A7%E5%8E%9F%E5%88%99"><span class="nav-number">12.1.</span> <span class="nav-text">设计模式六大原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%88%86%E7%B1%BB"><span class="nav-number">12.2.</span> <span class="nav-text">设计模式分类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E4%BE%8B"><span class="nav-number">12.2.1.</span> <span class="nav-text">单例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E5%B7%A5%E5%8E%82"><span class="nav-number">12.2.2.</span> <span class="nav-text">简单工厂</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95"><span class="nav-number">12.2.3.</span> <span class="nav-text">工厂方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%BD%E8%B1%A1%E5%B7%A5%E5%8E%82"><span class="nav-number">12.2.4.</span> <span class="nav-text">抽象工厂</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E5%9E%8B%E6%A8%A1%E5%BC%8F"><span class="nav-number">12.2.5.</span> <span class="nav-text">原型模式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HashMap"><span class="nav-number">13.</span> <span class="nav-text">HashMap</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%81%BF%E5%85%8DHash%E7%A2%B0%E6%92%9E%E7%AD%96%E7%95%A5"><span class="nav-number">13.1.</span> <span class="nav-text">避免Hash碰撞策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashMap%E4%BD%95%E6%97%B6%E6%89%A9%E5%AE%B9"><span class="nav-number">13.2.</span> <span class="nav-text">HashMap何时扩容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashMap%E4%B8%BA%E4%BB%80%E4%B9%88%E7%BA%BF%E7%A8%8B%E4%B8%8D%E5%AE%89%E5%85%A8"><span class="nav-number">13.3.</span> <span class="nav-text">HashMap为什么线程不安全</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ConcurrentHashMap%E5%8E%9F%E7%90%86"><span class="nav-number">14.</span> <span class="nav-text">ConcurrentHashMap原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ReenTrantLock"><span class="nav-number">15.</span> <span class="nav-text">ReenTrantLock</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">16.</span> <span class="nav-text">数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E4%BA%8B%E5%8A%A1"><span class="nav-number">16.1.</span> <span class="nav-text">什么是事务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E5%9B%9B%E4%B8%AA%E7%89%B9%E6%80%A7"><span class="nav-number">16.2.</span> <span class="nav-text">事务四个特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E5%B9%B6%E5%8F%91%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-number">16.3.</span> <span class="nav-text">事务并发可能出现的情况</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">16.4.</span> <span class="nav-text">事务的隔离级别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8A%E4%BA%86%E5%86%99%E9%94%81%EF%BC%88%E5%86%99%E6%93%8D%E4%BD%9C%EF%BC%89%EF%BC%8C%E5%88%AB%E7%9A%84%E4%BA%8B%E5%8A%A1%E8%BF%98%E5%8F%AF%E4%BB%A5%E8%AF%BB%E6%93%8D%E4%BD%9C%EF%BC%9F"><span class="nav-number">16.5.</span> <span class="nav-text">为什么上了写锁（写操作），别的事务还可以读操作？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MVCC"><span class="nav-number">16.6.</span> <span class="nav-text">MVCC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVCC%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">16.6.1.</span> <span class="nav-text">MVCC实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E4%B8%AA%E9%9A%90%E5%BC%8F%E5%AD%97%E6%AE%B5"><span class="nav-number">16.6.1.1.</span> <span class="nav-text">3 个隐式字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#undo%E6%97%A5%E5%BF%97"><span class="nav-number">16.6.1.2.</span> <span class="nav-text">undo日志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Read-view"><span class="nav-number">16.6.1.3.</span> <span class="nav-text">Read view</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BD%AC%E5%8F%91%E5%92%8C%E9%87%8D%E5%AE%9A%E5%90%91%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">17.</span> <span class="nav-text">转发和重定向的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#integer%E7%BC%93%E5%AD%98%E6%B1%A0"><span class="nav-number">18.</span> <span class="nav-text">integer缓存池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA%E5%B8%B8%E7%94%A8%E9%9B%86%E5%90%88"><span class="nav-number">19.</span> <span class="nav-text">JAVA常用集合</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8D%81%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95"><span class="nav-number">20.</span> <span class="nav-text">十大排序算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%92%8C%E6%B5%85%E6%8B%B7%E8%B4%9D"><span class="nav-number">21.</span> <span class="nav-text">深拷贝和浅拷贝</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM"><span class="nav-number">22.</span> <span class="nav-text">JVM</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E5%8C%BA"><span class="nav-number">22.1.</span> <span class="nav-text">方法区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A0%86"><span class="nav-number">22.2.</span> <span class="nav-text">堆</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%88%EF%BC%88java%E8%99%9A%E6%8B%9F%E6%9C%BA%E6%A0%88%EF%BC%89"><span class="nav-number">22.3.</span> <span class="nav-text">栈（java虚拟机栈）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%AC%E5%9C%B0%E6%96%B9%E6%B3%95%E6%A0%88"><span class="nav-number">22.4.</span> <span class="nav-text">本地方法栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A8%8B%E5%BA%8F%E8%AE%A1%E6%95%B0%E5%99%A8"><span class="nav-number">22.5.</span> <span class="nav-text">程序计数器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">23.</span> <span class="nav-text">垃圾回收机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%AA%E4%BA%9B%E5%8F%AF%E4%BB%A5%E4%BD%9C%E4%B8%BAGC-Roots%E5%AF%B9%E8%B1%A1"><span class="nav-number">23.1.</span> <span class="nav-text">哪些可以作为GC Roots对象</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A0%86%E5%92%8C%E6%A0%88%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">24.</span> <span class="nav-text">堆和栈的区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA%E4%BC%9A%E5%AD%98%E5%9C%A8%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F%E5%90%97"><span class="nav-number">25.</span> <span class="nav-text">JAVA会存在内存泄漏吗</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JVM%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6"><span class="nav-number">26.</span> <span class="nav-text">JVM类加载机制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%EF%BC%9A"><span class="nav-number">26.1.</span> <span class="nav-text">双亲委派：</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%EF%BC%88%E5%85%83%E7%A9%BA%E9%97%B4"><span class="nav-number">27.</span> <span class="nav-text">元数据（元空间</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98"><span class="nav-number">27.1.</span> <span class="nav-text">JVM性能调优</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JVM%E8%B0%83%E4%BC%98%E7%9B%AE%E6%A0%87"><span class="nav-number">27.1.1.</span> <span class="nav-text">JVM调优目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VM%E8%B0%83%E4%BC%98%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">27.1.2.</span> <span class="nav-text">VM调优的步骤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A1%AE%E5%AE%9A%E4%BC%98%E5%8C%96%E7%9B%AE%E6%A0%87"><span class="nav-number">27.1.3.</span> <span class="nav-text">确定优化目标</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JVM%E5%8F%82%E6%95%B0%E8%B0%83%E4%BC%98"><span class="nav-number">27.2.</span> <span class="nav-text">JVM参数调优</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8"><span class="nav-number">27.3.</span> <span class="nav-text">垃圾收集器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Serial"><span class="nav-number">27.3.1.</span> <span class="nav-text">Serial</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ParNew"><span class="nav-number">27.3.2.</span> <span class="nav-text">ParNew</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parallel-Scavenge"><span class="nav-number">27.3.3.</span> <span class="nav-text">Parallel Scavenge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Serial-Old"><span class="nav-number">27.3.4.</span> <span class="nav-text">Serial Old</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Parallnel-old"><span class="nav-number">27.3.5.</span> <span class="nav-text">Parallnel old</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CMS"><span class="nav-number">27.3.6.</span> <span class="nav-text">CMS</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#G1"><span class="nav-number">27.3.7.</span> <span class="nav-text">G1</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84"><span class="nav-number">28.</span> <span class="nav-text">反射</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E5%8F%8D%E5%B0%84%E7%9A%84%E4%B8%89%E7%A7%8D%E6%96%B9%E5%BC%8F"><span class="nav-number">28.1.</span> <span class="nav-text">获取反射的三种方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">28.2.</span> <span class="nav-text">反射机制优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%8D%E5%B0%84%E6%9C%BA%E5%88%B6%E7%9A%84%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="nav-number">28.3.</span> <span class="nav-text">反射机制的应用场景有哪些？</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-%E7%9A%84-Keep-alive-%E5%92%8C-HTTP-%E7%9A%84-Keep-Alive"><span class="nav-number">29.</span> <span class="nav-text">TCP 的 Keep alive 和 HTTP 的 Keep-Alive</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%82%E5%B8%B8"><span class="nav-number">30.</span> <span class="nav-text">异常</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Error"><span class="nav-number">30.1.</span> <span class="nav-text">Error</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Exception"><span class="nav-number">30.2.</span> <span class="nav-text">Exception</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%90%E8%A1%8C%E6%97%B6%E5%BC%82%E5%B8%B8"><span class="nav-number">30.2.1.</span> <span class="nav-text">运行时异常</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E5%BC%82%E5%B8%B8"><span class="nav-number">30.2.2.</span> <span class="nav-text">编译时异常</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Error%E5%92%8CException%E5%8C%BA%E5%88%AB%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-number">30.3.</span> <span class="nav-text">Error和Exception区别是什么</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-number">31.</span> <span class="nav-text">共享内存</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%97%B4%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E5%92%8C%E8%BF%9B%E7%A8%8B%E9%97%B4%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">31.1.</span> <span class="nav-text">线程间共享内存和进程间共享内存的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98"><span class="nav-number">31.2.</span> <span class="nav-text">如何实现共享内存</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8%E4%B8%A4%E4%B8%AA%E7%BA%BF%E7%A8%8B%E9%97%B4%E5%85%B1%E4%BA%AB%E6%95%B0%E6%8D%AE"><span class="nav-number">31.3.</span> <span class="nav-text">如何在两个线程间共享数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLocal"><span class="nav-number">31.4.</span> <span class="nav-text">ThreadLocal</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81Redis%E7%BC%93%E5%AD%98%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7%EF%BC%9F"><span class="nav-number">32.</span> <span class="nav-text">如何保证Redis缓存与数据库的一致性？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E6%97%B6%E5%8F%8C%E5%88%A0"><span class="nav-number">32.1.</span> <span class="nav-text">延时双删</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#InnoDB%E5%92%8CMyISAM"><span class="nav-number">33.</span> <span class="nav-text">InnoDB和MyISAM</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98"><span class="nav-number">34.</span> <span class="nav-text">什么是虚拟内存</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BIO%E3%80%81NIO%E3%80%81AIO%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB"><span class="nav-number">35.</span> <span class="nav-text">BIO、NIO、AIO有什么区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%B8%B8%E9%87%8F%E6%B1%A0"><span class="nav-number">36.</span> <span class="nav-text">什么是字符串常量池</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JAVA%E9%9B%86%E5%90%88%E7%9A%84%E5%BF%AB%E9%80%9F%E5%A4%B1%E8%B4%A5%E6%9C%BA%E5%88%B6fail-fast"><span class="nav-number">37.</span> <span class="nav-text">JAVA集合的快速失败机制fail-fast</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring"><span class="nav-number">38.</span> <span class="nav-text">Spring</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E6%98%AF%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC%EF%BC%88IOC%EF%BC%89%E5%92%8C%E9%9D%A2%E5%90%91%E5%88%87%E9%9D%A2-AOP"><span class="nav-number">38.1.</span> <span class="nav-text">核心是控制反转（IOC）和面向切面(AOP)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E5%92%8C%E6%8E%A7%E5%88%B6%E5%8F%8D%E8%BD%AC"><span class="nav-number">38.2.</span> <span class="nav-text">依赖注入和控制反转</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-number">38.3.</span> <span class="nav-text">Spring常用注解</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%B4%A2%E5%BC%95%E4%B8%BA%E4%BB%80%E4%B9%88%E9%87%87%E7%94%A8b-%E6%A0%91"><span class="nav-number">39.</span> <span class="nav-text">索引为什么采用b+树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ArrayList%E5%92%8CLinkedList"><span class="nav-number">40.</span> <span class="nav-text">ArrayList和LinkedList</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Spring%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96"><span class="nav-number">41.</span> <span class="nav-text">Spring如何解决循环依赖</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%E4%B8%89%E7%BA%A7%E7%BC%93%E5%AD%98%E5%91%A2%EF%BC%9F%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98%E8%83%BD%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E5%90%97%EF%BC%9F"><span class="nav-number">42.</span> <span class="nav-text">为什么要使用三级缓存呢？二级缓存能解决循环依赖吗？</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%9C%89%E4%BA%86%E7%BA%BF%E7%A8%8B%E8%BF%98%E8%A6%81%E6%9C%89%E5%8D%8F%E7%A8%8B"><span class="nav-number">43.</span> <span class="nav-text">为什么有了线程还要有协程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Volatile%E5%8E%9F%E7%90%86"><span class="nav-number">44.</span> <span class="nav-text">Volatile原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%B2%E6%AD%A2sql%E6%B3%A8%E5%85%A5"><span class="nav-number">45.</span> <span class="nav-text">防止sql注入</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-number">46.</span> <span class="nav-text">Bean的生命周期</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B5%8F%E8%A7%88%E5%99%A8%E7%A6%81%E7%94%A8Cookie"><span class="nav-number">47.</span> <span class="nav-text">浏览器禁用Cookie</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#this%E5%92%8Csuper%E5%8C%BA%E5%88%AB"><span class="nav-number">48.</span> <span class="nav-text">this和super区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#static%E5%92%8Cfinal%E5%8C%BA%E5%88%AB"><span class="nav-number">49.</span> <span class="nav-text">static和final区别</span></a></li><li class="nav-item nav-level-1"><a class="nav-link"><span class="nav-number">50.</span> <span class="nav-text"></span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%BF%87%E6%BB%A4%E5%99%A8%E5%92%8C%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-number">51.</span> <span class="nav-text">过滤器和拦截器</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95%E4%B8%8E%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95"><span class="nav-number">52.</span> <span class="nav-text">聚簇索引与非聚簇索引</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mysql%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8b-%E6%A0%91-%E4%B8%8D%E4%BD%BF%E7%94%A8b%E6%A0%91"><span class="nav-number">53.</span> <span class="nav-text">Mysql为什么使用b+树 不使用b树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-B-%E6%A0%91%E7%9A%84data%E5%8F%AA%E5%AD%98%E5%82%A8%E5%9C%A8%E5%8F%B6%E5%AD%90%E8%8A%82%E7%82%B9%E4%B8%8A%EF%BC%8CB%E6%A0%91%E7%9A%84%E6%89%80%E6%9C%89%E8%8A%82%E7%82%B9%E9%83%BD%E5%AD%98%E5%82%A8%E4%BA%86key%E5%92%8Cdata"><span class="nav-number">53.0.0.1.</span> <span class="nav-text">1)B+树的data只存储在叶子节点上，B树的所有节点都存储了key和data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-B-%E6%A0%91%E7%9A%84%E6%89%80%E6%9C%89%E5%8F%B6%E7%BB%93%E7%82%B9%E6%9E%84%E6%88%90%E4%B8%80%E4%B8%AA%E6%9C%89%E5%BA%8F%E9%93%BE%E8%A1%A8%EF%BC%8C%E5%8F%AF%E4%BB%A5%E6%8C%89%E7%85%A7%E5%85%B3%E9%94%AE%E7%A0%81%E6%8E%92%E5%BA%8F%E7%9A%84%E6%AC%A1%E5%BA%8F%E6%9D%A5%E6%9C%89%E5%BA%8F%E9%81%8D%E5%8E%86%E5%85%A8%E9%83%A8%E8%AE%B0%E5%BD%95"><span class="nav-number">53.0.0.2.</span> <span class="nav-text">2)B+树的所有叶结点构成一个有序链表，可以按照关键码排序的次序来有序遍历全部记录</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">54.</span> <span class="nav-text">创建线程的方式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8"><span class="nav-number">55.</span> <span class="nav-text">java类加载器</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="罗小白"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">罗小白</p>
+  <div class="site-description" itemprop="description">静以修身</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/LTT588" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;LTT588" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1358867321@qq.com" title="E-Mail → mailto:1358867321@qq.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 2022-09 – 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">罗小白</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共32.9k字</span>
+</div>
+
+    <script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <span id="busuanzi_container_site_pv">总访问量<span id="busuanzi_value_site_pv"></span>次</span>
+    <span class="post-meta-divider">|</span>
+    <span id="busuanzi_container_site_uv">总访客数<span id="busuanzi_value_site_uv"></span>人</span>
+    <span class="post-meta-divider">|</span>
+<!-- 不蒜子计数初始值纠正 -->
+<script>
+$(document).ready(function() {
+
+    var int = setInterval(fixCount, 50);  // 50ms周期检测函数
+    var countOffset = 20000;  // 初始化首次数据
+
+    function fixCount() {            
+       if (document.getElementById("busuanzi_container_site_pv").style.display != "none")
+        {
+            $("#busuanzi_value_site_pv").html(parseInt($("#busuanzi_value_site_pv").html()) + countOffset); 
+            clearInterval(int);
+        }                  
+        if ($("#busuanzi_container_site_pv").css("display") != "none")
+        {
+            $("#busuanzi_value_site_uv").html(parseInt($("#busuanzi_value_site_uv").html()) + countOffset); // 加上初始数据 
+            clearInterval(int); // 停止检测
+        }  
+    }
+       	
+});
+</script> 
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+  <script defer src="/lib/three/three.min.js"></script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
